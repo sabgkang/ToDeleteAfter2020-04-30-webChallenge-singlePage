@@ -16,7 +16,10 @@
   <div id="firebaseui-auth-container"></div>
   <div id="loader">Loging...</div>
 
-  <button onclick="myFunction()">Click Me</button>
+  <button onclick="myFunctionA()">SignIn A</button>
+  <button onclick="myFunctionB()">SignIn B</button>
+
+  <button onclick="myFunction()">Click User</button>
   <button onclick="myFunction1()">SignOut</button>
 
 
@@ -54,29 +57,30 @@
       console.log(user);
     });
 
-
-    firebase.auth().signInWithEmailAndPassword("aaa@test.com", "aaaaaa").catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      document.getElementById("loader").innerHTML = "Login Error";
-    });
-
-    firebase.auth().signInWithEmailAndPassword("bbb@test.com", "bbbbbb").catch(function(error) {
-      // Handle Errors here.
-      var errorCode = error.code;
-      var errorMessage = error.message;
-      document.getElementById("loader").innerHTML = "Login Error";
-    });
-
-    console.log("OK");
     document.getElementById("loader").innerHTML = "OK";
   </script>
 
   <script>
+    function myFunctionA() {
+      firebase.auth().signInWithEmailAndPassword("aaa@test.com", "aaaaaa").catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        document.getElementById("loader").innerHTML = "Login Error";
+      });
+    }
+
+    function myFunctionB() {
+      firebase.auth().signInWithEmailAndPassword("bbb@test.com", "bbbbbb").catch(function(error) {
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        document.getElementById("loader").innerHTML = "Login Error";
+      });
+    }
+
     function myFunction() {
       var user = firebase.auth().currentUser;
-      console.log("HERE");
       console.log(user);
     }
 
