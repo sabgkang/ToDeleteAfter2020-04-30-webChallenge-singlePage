@@ -7,6 +7,68 @@
   <link rel="stylesheet" href="/css/main.css">
   <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
   <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
+
+  <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2019.3.1023/styles/kendo.common.min.css">
+  <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2019.3.1023/styles/kendo.rtl.min.css">
+  <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2019.3.1023/styles/kendo.default.min.css">
+  <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2019.3.1023/styles/kendo.mobile.all.min.css">
+
+  <script src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
+  <script src="https://kendo.cdn.telerik.com/2019.3.1023/js/angular.min.js"></script>
+  <script src="https://kendo.cdn.telerik.com/2019.3.1023/js/jszip.min.js"></script>
+  <script src="https://kendo.cdn.telerik.com/2019.3.1023/js/kendo.all.min.js"></script>
+
+  <script>
+    var products = [{
+        productName: "Tea",
+        category: "Beverages"
+      },
+      {
+        productName: "Coffee",
+        category: "Beverages"
+      },
+      {
+        productName: "Water",
+        category: "Beverages"
+      },
+      {
+        productName: "Juice",
+        category: "Beverages"
+      },
+      {
+        productName: "Decaffeinated Coffee",
+        category: "Beverages"
+      },
+      {
+        productName: "Iced Tea",
+        category: "Beverages"
+      },
+      {
+        productName: "Ham",
+        category: "Food"
+      },
+      {
+        productName: "Bread",
+        category: "Food"
+      },
+      {
+        productName: "Eggs",
+        category: "Food"
+      },
+      {
+        productName: "Bacon",
+        category: "Food"
+      },
+      {
+        productName: "Chips",
+        category: "Food"
+      },
+      {
+        productName: "Fish",
+        category: "Food"
+      }
+    ]
+  </script>
 </head>
 
 <body>
@@ -16,13 +78,40 @@
   <div id="firebaseui-auth-container"></div>
   <div id="loader">Loging...</div>
 
-  <button onclick="myFunctionA()">SignIn A</button>
+  <button class= "k-primary" onclick="myFunctionA()">SignIn A</button>
   <button onclick="myFunctionB()">SignIn B</button>
 
   <button onclick="myFunction()">UserID</button>
   <button onclick="myFunction1()">SignOut</button>
 
   <button onclick="myFunctionW()">Write Database</button>
+
+  <div style="height: 20px"></div>
+  
+  <div id="example">
+    <div id="grid"></div>
+    <script>
+      $(document).ready(function() {
+        $("#grid").kendoGrid({
+          columns: [{
+              field: "productName"
+            },
+            {
+              field: "category"
+            }
+          ],
+          dataSource: {
+            data: products,
+            pageSize: 4
+          },
+          pageable: {
+            refresh: true,
+            pageSizes: true
+          }
+        });
+      });
+    </script>
+  </div>
 
 
   <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
@@ -53,7 +142,7 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics();
-    
+
     var database = firebase.database();
   </script>
 
@@ -67,6 +156,7 @@
 
   <script>
     var i = 0;
+
     function myFunctionA() {
       firebase.auth().signInWithEmailAndPassword("aaa@test.com", "aaaaaa").catch(function(error) {
         // Handle Errors here.
@@ -93,6 +183,8 @@
     function myFunction1() {
       firebase.auth().signOut();
       console.log("logout");
+
+      $("#grid").data("kendoGrid").dataSource.read();
     }
 
     function myFunctionW() {
@@ -104,11 +196,33 @@
         username: 'SABG KANG',
         email: 'aaa@test.com',
       });
-      
+
       i++;
 
     }
   </script>
+
+  <style type="text/css">
+    .customer-photo {
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-size: 32px 35px;
+      background-position: center center;
+      vertical-align: middle;
+      line-height: 32px;
+      box-shadow: inset 0 0 1px #999, inset 0 0 10px rgba(0, 0, 0, .2);
+      margin-left: 5px;
+    }
+
+    .customer-name {
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 32px;
+      padding-left: 3px;
+    }
+  </style>
 
 </body>
 
