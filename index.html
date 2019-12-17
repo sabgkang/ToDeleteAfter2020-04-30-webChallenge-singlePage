@@ -78,7 +78,7 @@
   <div id="firebaseui-auth-container"></div>
   <div id="loader">Loging...</div>
 
-  <button class= "k-primary" onclick="myFunctionA()">SignIn A</button>
+  <button class="k-primary" onclick="myFunctionA()">SignIn A</button>
   <button onclick="myFunctionB()">SignIn B</button>
 
   <button onclick="myFunction()">UserID</button>
@@ -87,7 +87,7 @@
   <button onclick="myFunctionW()">Write Database</button>
 
   <div style="height: 20px"></div>
-  
+
   <div id="example">
     <div id="grid"></div>
     <script>
@@ -98,6 +98,17 @@
             },
             {
               field: "category"
+            },
+            {
+              command: [{
+                  text: "aaa"
+                },
+                {
+                  text: "bbb"
+                }
+              ],
+              //title: "&nbsp;",
+              //width: "250px"
             }
           ],
           dataSource: {
