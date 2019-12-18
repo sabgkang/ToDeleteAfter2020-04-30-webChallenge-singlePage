@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>Client Side jQuery DataTables</title>
+  <!--引用css-->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
+
+<link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+
+</head>
+
+<body>
+
+  <button onclick="bbbFunction()">Add</button>
+<!--  <table id="example" class="display" width="100%" ></table>-->
+  
+  <table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th style="font-size: 30px">課程編號</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Tiger Nixon</td>
+                <td>System Architect</td>
+                <td>Edinburgh</td>
+                <td>61</td>
+                <td>2011/04/25</td>
+                <td>$320,800</td>
+            </tr>
+        </tbody>
+<!--
+        <tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Office</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot>
+-->
+    </table>
+
+  <!--引用jQuery-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <!--引用dataTables.js-->
+  <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+  <script type="text/javascript">
+    var dataSet = [
+      ["U0001", "夜店風 Zumba 燃脂", "Jacky", "2019.08.29 18:30", "150", "30"],
+    ];
+
+    $(document).ready(function() {
+      $('#example').css("font-family", 'Noto Sans TC' );
+      var table = $('#example').DataTable();
+//      $('#example').DataTable({
+//        data: dataSet,
+//        columns: [{
+//            title: "課程編號"
+//          },
+//          {
+//            title: "課程名稱"
+//          },
+//          {
+//            title: "老師"
+//          },
+//          {
+//            title: "時間"
+//          },
+//          {
+//            title: "卡路里燃燒"
+//          },
+//          {
+//            title: "人數"
+//          }
+//        ]
+//      });
+
+      $('#example tbody').on('click', 'tr', function() {
+        var data = $('#example').DataTable().row(this).data();
+        console.log(data[0]);
+        if ($(this).hasClass('selected')) {
+          $(this).removeClass('selected');
+        } else {
+          $('#example').DataTable().$('tr.selected').removeClass('selected');
+          $(this).addClass('selected');
+        }
+      });
+    });
+  </script>
+
+  <script>
+    function aaaFunction() {
+      console.log("aaa");
+      //$("#aaa").css('background-color', 'red');
+      $("#aaa").css({
+        "background-color": "yellow",
+        "font-size": "200%"
+      });
+      $("#aaa").html('Save');
+    }
+
+    function bbbFunction() {
+      console.log("bbb");
+      var table = $('#example').DataTable();
+      //      table.cell(2,2).data('AAA').draw();
+
+      table.row.add(['AAA', 'bbb']).draw();
+      //table.row('.selected').remove().draw(false);
+
+
+
+    }
+  </script>
+
+</body>
+
+</html>
+https://datatables.net/examples/api/select_single_row
+https://datatables.net/forums/discussion/49353/change-column-title-font-size-at-runtime
