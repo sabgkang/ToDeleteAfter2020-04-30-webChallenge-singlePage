@@ -7,37 +7,60 @@
   <!--引用css-->
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
 
-<link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<style>
+.btn {
+  background-color: DodgerBlue;
+  border: none;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+/* Darker background on mouse-over */
+.btn:hover {
+  background-color: RoyalBlue;
+}
+</style>
 
 </head>
 
 <body>
 
-  <button onclick="bbbFunction()">Add</button>
-<!--  <table id="example" class="display" width="100%" ></table>-->
-  
+<button class="btn"><i class="fa fa-home"></i></button>
+  <button onclick="bbbFunction()" name="save_customer" id="save_customer">Add</button>
+  <!--  <table id="example" class="display" width="100%" ></table>-->
+
   <table id="example" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th style="font-size: 30px">課程編號</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Tiger Nixon</td>
-                <td>System Architect</td>
-                <td>Edinburgh</td>
-                <td>61</td>
-                <td>2011/04/25</td>
-                <td>$320,800</td>
-            </tr>
-        </tbody>
-<!--
+    <thead>
+      <tr style="font-size: 18px; ">
+        <th>課程編號</th>
+        <th>課程名稱</th>
+        <th>老師</th>
+        <th>時間</th>
+        <th>卡路里燃燒</th>
+        <th>課程人數</th>
+        <th>操作</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>U0001</td>
+        <td>夜店風 Zumba 燃脂</td>
+        <td>Jacky</td>
+        <td>2019.08.29 18:30</td>
+        <td>150</td>
+        <td>30</td>
+        <td>Delete</td>
+
+      </tr>
+    </tbody>
+    <!--
         <tfoot>
             <tr>
                 <th>Name</th>
@@ -49,12 +72,15 @@
             </tr>
         </tfoot>
 -->
-    </table>
+  </table>
 
   <!--引用jQuery-->
-  <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<!--  <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js"></script>-->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.3.min.js"></script>
   <!--引用dataTables.js-->
   <script type="text/javascript" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+
 
   <script type="text/javascript">
     var dataSet = [
@@ -62,30 +88,43 @@
     ];
 
     $(document).ready(function() {
-      $('#example').css("font-family", 'Noto Sans TC' );
-      var table = $('#example').DataTable();
-//      $('#example').DataTable({
-//        data: dataSet,
-//        columns: [{
-//            title: "課程編號"
-//          },
-//          {
-//            title: "課程名稱"
-//          },
-//          {
-//            title: "老師"
-//          },
-//          {
-//            title: "時間"
-//          },
-//          {
-//            title: "卡路里燃燒"
-//          },
-//          {
-//            title: "人數"
-//          }
-//        ]
-//      });
+      
+      $('#example').css("font-family", 'Noto Sans TC');
+      var table = $('#example').DataTable({
+        data: dataSet,
+        deferRender: true,
+        columns: [{
+            title: "課程編號"
+          },
+          {
+            title: "課程名稱"
+          },
+          {
+            title: "老師"
+          },
+          {
+            title: "時間"
+          },
+          {
+            title: "卡路里燃燒"
+          },
+          {
+            title: "人數"
+          },
+          {
+            title: "操作",
+            "render": function() {
+
+              return $('<button onclick="cccFunction()">')
+                .text("Delete")
+                .wrap('<div></div>')
+                .parent()
+                .html();
+
+            }
+          }
+        ]
+      });
 
       $('#example tbody').on('click', 'tr', function() {
         var data = $('#example').DataTable().row(this).data();
@@ -116,11 +155,16 @@
       var table = $('#example').DataTable();
       //      table.cell(2,2).data('AAA').draw();
 
-      table.row.add(['AAA', 'bbb']).draw();
+      var dataToAdd = [
+        "U0002", "夜店風 Zumba 燃脂", "Jacky", "2019.08.29 18:30", "150", "30",
+      ];
+      table.row.add(dataToAdd).draw();
+      //table.row.add(['AAA', 'bbb']).draw();
       //table.row('.selected').remove().draw(false);
+    }
 
-
-
+    function cccFunction() {
+      console.log("ccc");
     }
   </script>
 
