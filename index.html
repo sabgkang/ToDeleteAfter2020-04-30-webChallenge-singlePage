@@ -10,7 +10,7 @@
   <script src="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.js"></script>
   <link type="text/css" rel="stylesheet" href="https://cdn.firebase.com/libs/firebaseui/3.5.2/firebaseui.css" />
 
-  <!-- 有點奇怪，加入此行有些字體會不對 <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">-->
+  <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" />
@@ -37,8 +37,21 @@
 
   <!--  end of for test -->
 
+  <div id="loginDiv" style="border-width:1px;border-style:solid;border-color:gray;padding-top: 30px; width: 650px;height: 180px; margin: 0 auto; margin-top: 30px">
+    <div class="courseLabel" style="width: 150px; float: left; text-align: right">Email Address</div>
+    <input id="emailAddress" class="courseInput" style="width: 440px" type="email" placeholder="請輸入 Email Address"><br>
+
+    <div class="courseLabel" style="width: 150px; float: left; text-align: right">密 碼</div>
+    <input id="password" class="courseInput" style="width: 440px" type="password" placeholder="請輸入密碼"><br>
+
+    <button class="btn-blue" onclick="signIn()" style="margin-left: 250px"><i class="fa fa-sign-in"></i>&nbsp 登入</button>
+    <button class="btn-red" onclick="signInAbort()" style="margin-left: 30px"><i class="fa fa-thumbs-down"></i>&nbsp 放棄</button>
+  </div>
+
   <div>
-    <button class="btn-blue" onclick="" style="float: right; margin-right: 30px"><i class="fa fa-user"></i>&nbsp 客戶管理</button>
+    <button class="btn-blue" onclick="" style="float: right; margin-right: 10px"><i class="fa fa-user"></i>&nbsp 客戶管理</button>
+    <button class="btn-blue" id="logToggle" onclick="logInAndOut()" style="float: right; margin-right: 10px; margin-left: 0px"><i class="fa fa-sign-in"></i>&nbsp 登入</button>
+    <button id="loginStatus" class="btn-blue" style="float: right; background-color: white; color: gray">請登入來寫入資料庫</button>
 
     <h1>林口運動中心 - 團體課程管理</h1>
   </div>
@@ -135,6 +148,8 @@
       <button class="btn-red" onclick="courseUpdate()" disabled="disabled">更新 課程資料</button>
       <br>
 
+      <button class="btn-blue" onclick="" style="float: right; width: 168px; height: 30px;padding: 0px;margin-bottom: 10px" ><i class="fa fa-pen"></i>&nbsp 報名課程</button>     
+     
       <table id="memberTable" class="display" style="width:100%;font-family:'Noto Sans TC'">
         <thead>
           <tr id="table-header">
@@ -179,8 +194,23 @@
 
         var database = firebase.database();
 
+        var isLogin = false;
         firebase.auth().onAuthStateChanged(function(user) {
           console.log(user);
+
+          if (user == null) {
+            // not login
+            console.log("no login");
+            $("#loginStatus").text("請登入來寫入資料庫");
+            $("#logToggle").text("登入");
+            isLogin = false;
+          } else {
+            // login
+            console.log(user.email);
+            $("#loginStatus").text("Hello " + user.email);
+            $("#logToggle").text("登出");
+            isLogin = true;
+          }
         });
 
         function readCoursesfromDB() {
@@ -298,7 +328,7 @@
         //        ];
 
         $(document).ready(function() {
-
+          $("#loginDiv").hide();
           $("#addCourse").hide();
           $("#courseDetail").hide();
 
@@ -681,8 +711,46 @@
         //
         //        }        
 
+        function logInAndOut() {
+          if (!isLogin) {
+            $("#password").val("");
+            $("#loginDiv").show();
+          } else {
+            firebase.auth().signOut();
+          }
+        }
 
-        // below are for tests
+        function signIn() {
+          //check email
+          if (!validateEmail($("#emailAddress").val())) {
+            $("#emailAddress").val("");
+            $("#emailAddress").attr("placeholder", "Email Address Error, try again!");
+            $("#emailAddress").css("background-color", "yellow");
+          } else {
+            $("#loginDiv").hide();
+            firebase.auth().signInWithEmailAndPassword($("#emailAddress").val(), $("#password").val()).catch(function(error) {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              alert("Login Error! Try again!")
+            });
+          }
+
+        }
+
+        function validateEmail(email) {
+          var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+          return re.test(String(email).toLowerCase());
+        }
+        
+        
+        function signInAbort() {
+          $("#loginDiv").hide();
+        }
+        
+        
+        // =====================================================================below are for tests
 
         var i = 0;
 
