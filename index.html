@@ -163,7 +163,8 @@
             <th style="width: 30px">操作</th>
           </tr>
         </thead>
-      </table </div> </div> <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
+      </table </div> </div> 
+      <!-- Insert these scripts at the bottom of the HTML, but before you use any Firebase services -->
 
       <!-- Firebase App (the core Firebase SDK) is always required and must be listed first -->
       <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-app.js"></script>
@@ -176,145 +177,35 @@
       <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-database.js"></script>
       <script src="https://www.gstatic.com/firebasejs/7.5.2/firebase-firestore.js"></script>
 
-      <script>
-        // Your web app's Firebase configuration
-        var firebaseConfig = {
-          apiKey: "AIzaSyAhr69v1SCFW5mwzfv-qfMA6xL0IhKHNrc",
-          authDomain: "webchallenge-c16eb.firebaseapp.com",
-          databaseURL: "https://webchallenge-c16eb.firebaseio.com",
-          projectId: "webchallenge-c16eb",
-          storageBucket: "webchallenge-c16eb.appspot.com",
-          messagingSenderId: "372130663533",
-          appId: "1:372130663533:web:d73219272c0b4faf7f8364",
-          measurementId: "G-LZ3DN86LX1"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        firebase.analytics();
-
-        var database = firebase.database();
-
-        var isLogin = false;
-        firebase.auth().onAuthStateChanged(function(user) {
-          console.log(user);
-
-          if (user == null) {
-            // not login
-            console.log("no login");
-            $("#loginStatus").text("請登入來寫入資料庫");
-            $("#logToggle").text("登入");
-            isLogin = false;
-          } else {
-            // login
-            console.log(user.email);
-            $("#loginStatus").text("Hello " + user.email);
-            $("#logToggle").text("登出");
-            isLogin = true;
-          }
-        });
-
-        function readCoursesfromDB() {
-          console.log("Read Database");
-
-          $.loading.start('Loading data')
-
-          var dataIsDone = false;
-          var memberIsDone = false;
-          var courseIsDone = false;
-          firebase.database().ref('users/林口運動中心/團課課程').once('value').then(function(snapshot) {
-            console.log("data read done");
-            dataIsDone = true;
-            var result = snapshot.val();
-            dataSet = JSON.parse(result.現在課程);
-            dataSetHistory = JSON.parse(result.過去課程);
-
-            var tmp = dataSet[dataSet.length - 1][0];
-            courseNum = parseInt(tmp.substr(1, 4));
-            console.log(courseNum);
-
-            refreshCourse();
-
-            if (dataIsDone && memberIsDone && courseIsDone) $.loading.end();
-          });
-
-          firebase.database().ref('users/林口運動中心/客戶管理').once('value').then(function(snapshot) {
-            console.log("member read done");
-            memberIsDone = true;
-            var result = snapshot.val();
-            memberData = JSON.parse(result.會員資料);
-
-            if (dataIsDone && memberIsDone && courseIsDone) $.loading.end();
-          });
-
-          firebase.database().ref('users/林口運動中心/課程管理').once('value').then(function(snapshot) {
-            console.log("class read done");
-            courseIsDone = true;
-            var result = snapshot.val();
-            courseMember = JSON.parse(result.課程會員);
-
-            if (dataIsDone && memberIsDone && courseIsDone) $.loading.end();
-          });
-
-        }
-      </script>
-
-
+      <!-- Firebase Operations-->
+      <script src="js/firebase-ops.js"></script>
+      
+      <!-- Main page init-->
+      <script src="js/main-page.js"></script>
+      
+      <!-- Functions-->
+      <script src="js/functions.js"></script>      
+     
       <script type="text/javascript">
         var courseNum = 0; // Update from Database
         var inAddCourse = false;
 
-        // TODO: 用讀取 database 取代以下 hard coded 的 memberSet
+        // 資料格式
         //        var memberData = [
         //          ["謝小憲", "Jacky",   "09XXXXXXXX", "A1XXXXXXXX", "台北市"],
         //          ["許小琦", "Chantal", "09XXXXXXXX", "A1XXXXXXXX", "竹北市"],    
         //        ];
-
+        //
         //        var courseMember =[
         //          ["U0001", ["謝小憲", "paid", "attend"], ["許小琦", "unpaid", "unattend"]],
-        //          ["U0002", ["許小琦", "paid", "unattend"], ["謝小憲", "unpaid", "unattend"]],          
+        //          ["U0002", ["許小琦", "paid", "unattend"], ["謝小憲", "unpaid", "unattend"]],         
         //        ];
-
-
+        //
         //        var memberSet = [
         //          ["謝東憲", "Jacky", "09XXXXXXXX", "A1XXXXXXXX", "台北市總統府", "YES", "NO"],
         //        ];
-        var memberSet = [];
-        //        
-        //        courseMember.forEach(function(item, index, array) {
-        //          if (item[0]=="U0002") {
-        //            item.shift();
-        //            
-        //            item.forEach(function(item1, index, array){
-        //              //console.log(item1);
-        //              console.log(item1[1]);
-        //              var addData=[];
-        //              memberData.forEach(function(item2, index, array){
-        //                if (item1[0] == item2[0]) {
-        //                  addData = item2;
-        //                };
-        //              });
-        //              addData.push(item1[1], item1[2]);
-        //              console.log(addData);
-        //              memberSet.push(addData);
-        //            });
-        //            
-        //            item.unshift("U0002")
-        //          }
-        //        });
-
-
-
-
-        //        var aaa = [ ["aa", {a:["yes", "no"]}]
-
-        // 用讀取 database 得到 dataSet 和 dataSetHistory
-        var dataSet = [];
-        var dataSetHistory = [];
-        readCoursesfromDB();
-
-
-        // [ID, Name, Coach, date/time, Calories, Max.Persons,
-        //  Assist, Fee, OtherDesc]
+        //
+        //        [ID, Name, Coach, date/time, Calories, Max.Persons, Assist, Fee, OtherDesc]
         //        var dataSet = [
         //          ["U0002", "夜店風 Zumba 燃脂", "Jacky", "2019.08.29 18:30", "150", "30",
         //            "Chantal", "200", "帶你體驗不一樣的夜店風 Zumba 課程"
@@ -325,431 +216,22 @@
         //          ["U0001", "夜店風 Zumba 燃脂", "Jacky", "2019.08.29 18:30", "150", "30",
         //            "Chantal", "200", "帶你體驗不一樣的夜店風 Zumba 課程"
         //          ],
-        //        ];
+        //        ];        
+
+        var dataSet = [];
+        var dataSetHistory = [];
+        var memberSet = [];
+        
+        // 從 Firebase 資料庫取得 dataSet 和 dataSetHistory, 在 js/firebase-ops.js 中
+        readCoursesfromDB();
 
         $(document).ready(function() {
-          $("#loginDiv").hide();
-          $("#addCourse").hide();
-          $("#courseDetail").hide();
-
-          var courseTable = $('#courseTable').DataTable({
-            data: dataSet,
-            pageLength: 8,
-            lengthChange: false,
-            deferRender: true,
-            columns: [{ //title: "課程編號"
-                className: "centerCell"
-              },
-              {
-                //title: "課程名稱"
-              },
-              { //title: "老師"
-                className: "centerCell"
-              },
-              {
-                //title: "時間"
-                className: "centerCell"
-              },
-              {
-                //title: "卡路里燃燒"
-                className: "centerCell"
-              },
-              {
-                //title: "人數"
-                className: "centerCell"
-              },
-              {
-                //title: "操作",
-                data: null,
-                defaultContent: "<button class = 'dueButton to-edit'>到期</button> " +
-                  "<button class = 'detailButton to-edit'>詳細</button> " +
-                  "<button class = 'deleteButton to-delete'>刪除</button>"
-              }
-            ]
-          });
-
-          $('#courseTable tbody').on('click', '.dueButton', function() {
-            console.log("Due is clicked");
-
-            var sueIt = false;
-            dueIt = confirm("確定要課程過期!無法回復!");
-
-            if (dueIt) {
-              var data = courseTable.row($(this).parents('tr')).data();
-              console.log("delete:" + data[0]);
-
-              dataSetHistory.push(data);
-
-              dataSet = dataSet.filter(function(value, index, arr) {
-                return value[0] != data[0];
-              });
-
-              // TODO: 更新 database
-              courseTable.clear().draw();
-              courseTable.rows.add(dataSet);
-              courseTable.draw();
-
-              courseHistory.clear().draw();
-              courseHistory.rows.add(dataSetHistory);
-              courseHistory.draw();
-            }
-
-          });
-
-          $('#courseTable tbody').on('click', '.detailButton', function() {
-            console.log("Detail is clicked");
-
-            $("#courseTable").hide();
-            $("#courseHistory").hide();
-            $("#spacerBetweenTables").hide();
-
-            //$(".dataTables_filter").hide();
-            //$(".dataTables_info").hide();
-            $('#courseTable_filter').hide();
-            $('#courseTable_info').hide();
-            $('#courseTable_paginate').hide();
-            $('#courseHistory_filter').hide();
-            $('#courseHistory_info').hide();
-            $('#courseHistory_paginate').hide();
-            $("#addCourse").hide();
-            $("#inProgress").hide();
-            $("#addBtn").hide();
-            $("#refreshBtn").hide();
-
-            $("#memberTable_filter").css({
-              "font-size": "16px"
-            });
-            $("#memberTable_info").css({
-              "font-size": "16px"
-            });
-            $("#memberTable_paginate").css({
-              "font-size": "16px"
-            });
-
-            var data = courseTable.row($(this).parents('tr')).data();
-            //console.log("detail:" + data[0]);
-
-            $("#courseNumberDetail").text("簽到頁面 - " + data[0] + data[1] + "@" + data[3]);
-
-            $("#courseNameDetail").val(data[1]);
-            $("#coachNameDetail").val(data[2]);
-            $("#assistNameDetail").val(data[6]);
-            $("#courseTimeDetail").val(data[3]);
-            $("#CaloriesDetail").val(data[4]);
-            $("#maxPersonsDetail").val(data[5]);
-            $("#feeDetail").val(data[7]);
-            $("#otherDescDetail").val(data[8]);
-
-            memberSet = [];
-
-            courseMember.forEach(function(item, index, array) {
-              if (item[0] == data[0]) {
-                item.shift();
-
-                item.forEach(function(item1, index, array) {
-                  //console.log(item1);
-                  //console.log(item1[1]);
-                  var addData = [];
-                  memberData.forEach(function(item2, index, array) {
-                    if (item1[0] == item2[0]) {
-                      addData = item2;
-                    };
-                  });
-                  addData.push(item1[1], item1[2]);
-                  //console.log(addData);
-                  memberSet.push(addData);
-                });
-
-                item.unshift(data[0]);
-              }
-            });
-
-            memberTable.clear().draw();
-            memberTable.rows.add(memberSet);
-            memberTable.draw();
-
-            $("#courseDetail").show();
-
-          });
-
-          $("#courseTable tbody").on('click', '.deleteButton', function() {
-            // delete button
-            var data = courseTable.row($(this).parents('tr')).data();
-            console.log("delete:" + data[0]);
-
-            var deleteIt = false;
-            deleteIt = confirm("確定要刪除此課程!無法回復!");
-
-            if (deleteIt) {
-              //console.log("dddd");
-              dataSet = dataSet.filter(function(value, index, arr) {
-                return value[0] != data[0];
-              });
-
-              //courseNum--;
-
-              // TODO: 更新 database
-              console.log(deleteIt);
-              console.log(dataSet);
-              courseTable.clear().draw();
-              courseTable.rows.add(dataSet);
-              courseTable.draw();
-            }
-          });
-
-          var courseHistory = $('#courseHistory').DataTable({
-            data: dataSetHistory,
-            pageLength: 8,
-            deferRender: true,
-            lengthChange: false,
-            columns: [{ //title: "課程編號"
-                className: "centerCell"
-              },
-              {
-                //title: "課程名稱"
-              },
-              { //title: "老師"
-                className: "centerCell"
-              },
-              {
-                //title: "時間"
-                className: "centerCell"
-              },
-              {
-                //title: "卡路里燃燒"
-                className: "centerCell"
-              },
-              {
-                //title: "人數"
-                className: "centerCell"
-              },
-
-            ]
-          });
-
-          var memberTable = $('#memberTable').DataTable({
-            data: memberSet,
-            pageLength: 8,
-            lengthChange: false,
-            deferRender: true,
-            columns: [{ //title: "Name"
-                className: "centerCell"
-              },
-              {
-                //title: "LINE ID"
-                className: "centerCell"
-              },
-              { //title: "電話"
-                className: "centerCell"
-              },
-              {
-                //title: "身分證號"
-                className: "centerCell"
-              },
-              {
-                //title: "地址"
-                className: "centerCell"
-              },
-              {
-                //title: "繳費"
-                className: "centerCell"
-              },
-              {
-                //title: "簽到"
-                className: "centerCell"
-              },
-              {
-                //title: "操作",
-                className: "centerCell",
-                data: null,
-                defaultContent: "<button class = 'payButton to-edit'>繳費</button> " +
-                  "<button class = 'checkInButton to-edit'>簽到</button> "
-              }
-            ]
-          });
-
+          initMainPage(); // 在 js/main-page.js
         });
       </script>
-      <script>
-        function addCourse() {
-          console.log("addCourse");
-
-          courseNum++;
-          $("#courseNumber").text("新增團課課程 - U" + zeroFill(courseNum, 4));
-
-          $("#courseTable").hide();
-          $("#courseHistory").hide();
-          $("#spacerBetweenTables").hide();
-
-          $(".dataTables_filter").hide();
-          $(".dataTables_info").hide();
-          $('#courseTable_paginate').hide();
-          $('#courseHistory_paginate').hide();
-
-          $("#addCourse").show();
-
-          $("#inProgress").hide();
-          $("#addBtn").hide();
-          $("#refreshBtn").hide();
-          //      $("#addBtn").attr("disabled", true);
-          //      $("#refreshBtn").attr("disabled", true);
-        }
-
-        function courseConfirm() {
-          console.log("courseConfirm");
-          console.log($("#courseName").val());
-
-          console.log(typeof $("#Calories").val());
-          var dataToAdd = [
-            "U" + zeroFill(courseNum, 4),
-            $("#courseName").val(),
-            $("#coachName").val(),
-            $("#courseTime").val(),
-            $("#Calories").val(),
-            $("#maxPersons").val(),
-            $("#assistName").val(),
-            $("#fee").val(),
-            $("#otherDesc").val(),
-          ];
-
-          dataSet.push(dataToAdd);
-
-          var courseTable = $('#courseTable').DataTable();
-          courseTable.clear().draw();
-          courseTable.rows.add(dataSet);
-          courseTable.draw();
-
-          $("#addCourse").hide();
-          $("#courseTable").show();
-          $("#spacerBetweenTables").show();
-          $("#courseHistory").show();
-
-          $(".dataTables_filter").show();
-          $(".dataTables_info").show();
-          $('#courseTable_paginate').show();
-          $('#courseHistory_paginate').show();
-
-          $("#inProgress").show();
-          $("#addBtn").show();
-          $("#refreshBtn").show();
-          //      $("#addBtn").attr("disabled", false);
-          //      $("#refreshBtn").attr("disabled", false);      
-        }
-
-        function courseCancel() {
-          console.log("courseCancel");
-          courseNum--;
-          $("#addCourse").hide();
-          $("#spacerBetweenTables").show();
-          $("#courseHistory").show();
-          $("#courseTable").show();
-
-          $(".dataTables_filter").show();
-          $(".dataTables_info").show();
-          $('#courseTable_paginate').show();
-          $('#courseHistory_paginate').show();
-
-          $("#inProgress").show();
-          $("#addBtn").show();
-          $("#refreshBtn").show();
-          //      $("#addBtn").attr("disabled", false);
-          //      $("#refreshBtn").attr("disabled", false);       
-        }
-
-        function zeroFill(number, width) {
-          width -= number.toString().length;
-          if (width > 0) {
-            return new Array(width + (/\./.test(number) ? 2 : 1)).join('0') + number;
-          }
-          return number + ""; // always return a string
-        }
-
-        function refreshCourse() {
-          console.log("Refresh Course");
-
-          // TODO: 讀取 Database 的課程資料
-
-          var courseTable = $('#courseTable').DataTable();
-          courseTable.clear().draw();
-          courseTable.rows.add(dataSet);
-          courseTable.draw();
-
-          var courseTable = $('#courseHistory').DataTable();
-          courseTable.clear().draw();
-          courseTable.rows.add(dataSetHistory);
-          courseTable.draw();
-        }
-
-        function backToHome() {
-          console.log("Refresh Course");
-
-          $("#courseDetail").hide();
-
-          $("#courseTable").show();
-          $("#courseHistory").show();
-          $("#spacerBetweenTables").show();
-
-          $(".dataTables_filter").show();
-          $(".dataTables_info").show();
-          $('#courseTable_paginate').show();
-          $('#courseHistory_paginate').show();
-          $("#addCourse").hide();
-          $("#inProgress").show();
-          $("#addBtn").show();
-          $("#refreshBtn").show();
-        }
-
-        //        function readCoursesfromDB() {
-        //          console.log("Read Database");
-        //
-        //          firebase.database().ref('users/林口運動中心/團課課程').once('value').then(function(snapshot) {            
-        //            console.log("done");
-        //            var result = snapshot.val();
-        //            dataSet = JSON.parse(result.現在課程);
-        //            dataSetHistory = JSON.parse(result.過去課程);
-        //          });
-        //
-        //        }        
-
-        function logInAndOut() {
-          if (!isLogin) {
-            $("#password").val("");
-            $("#loginDiv").show();
-          } else {
-            firebase.auth().signOut();
-          }
-        }
-
-        function signIn() {
-          //check email
-          if (!validateEmail($("#emailAddress").val())) {
-            $("#emailAddress").val("");
-            $("#emailAddress").attr("placeholder", "Email Address Error, try again!");
-            $("#emailAddress").css("background-color", "yellow");
-          } else {
-            $("#loginDiv").hide();
-            firebase.auth().signInWithEmailAndPassword($("#emailAddress").val(), $("#password").val()).catch(function(error) {
-              // Handle Errors here.
-              var errorCode = error.code;
-              var errorMessage = error.message;
-              alert("Login Error! Try again!")
-            });
-          }
-
-        }
-
-        function validateEmail(email) {
-          var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
-          return re.test(String(email).toLowerCase());
-        }
-        
-        
-        function signInAbort() {
-          $("#loginDiv").hide();
-        }
-        
-        
+      
+      
+      <script>        
         // =====================================================================below are for tests
 
         var i = 0;
