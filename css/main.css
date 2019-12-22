@@ -1,3 +1,17 @@
+/*
+html { 
+  background: url(../webCourseBg.png) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+tr{
+    background-color: rgba(255,255,255,0.5);
+}
+*/
+
 h1 {
   color: dimgray;
   text-align: center;
@@ -34,7 +48,7 @@ h2 {
   font-family:'Noto Sans TC';
 }
 
-#memberTable{
+#courseMemberTable{
   font-size: 16px;
   font-family:'Noto Sans TC';
 }

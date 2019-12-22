@@ -146,7 +146,7 @@
       <button class="btn-red" onclick="courseUpdate()" disabled="disabled" >更新 課程資料</button>
       <br>
       
-      <table id="memberTable" class="display" style="width:100%;font-family:'Noto Sans TC'">
+      <table id="courseMemberTable" class="display" style="width:100%;font-family:'Noto Sans TC'">
         <thead>
           <tr id="table-header">
             <th style="width: 50px" >姓名</th>
@@ -168,8 +168,8 @@
     var courseNum = 2; // TODO: get from Database
     var inAddCourse = false;
 
-    // TODO: 用讀取 database 取代以下 hard coded 的 memberSet
-    var memberSet = [
+    // TODO: 用讀取 database 取代以下 hard coded 的 courseMemberSet
+    var courseMemberSet = [
       ["謝東憲", "Jacky", "09XXXXXXXX", "A1XXXXXXXX", "台北市總統府", "YES"],
     ];
     
@@ -296,9 +296,9 @@
         $("#addBtn").hide();
         $("#refreshBtn").hide();      
         
-        $("#memberTable_filter").css({"font-size": "16px"});
-        $("#memberTable_info").css({"font-size": "16px"});
-        $("#memberTable_paginate").css({"font-size": "16px"});
+        $("#courseMemberTable_filter").css({"font-size": "16px"});
+        $("#courseMemberTable_info").css({"font-size": "16px"});
+        $("#courseMemberTable_paginate").css({"font-size": "16px"});
         
         var data = courseTable.row($(this).parents('tr')).data();
         console.log("detail:" + data[0]);    
@@ -373,8 +373,8 @@
         ]
       });   
       
-      var memberTable = $('#memberTable').DataTable({
-        data: memberSet,
+      var courseMemberTable = $('#courseMemberTable').DataTable({
+        data: courseMemberSet,
         pageLength: 8,
         lengthChange: false,
         deferRender: true,
